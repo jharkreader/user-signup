@@ -2,22 +2,26 @@
 
 {% block content %}
 
-<h1>Signup</h1>
+<h1>Signup!</h1>
 
-<form action="/send" method="POST">
-    <p><label>
-        Username  <input type="text" name="username"/>
-    </label></p>
-    <p><label>
-        Password  <input type="text" name="password"/>
-    </label></p>
-    <p><label>
-        Verify password  <input type="text" name="v_password"/>
-    </label></p>
-    <p><label>
-        Email (optional)  <input type="text" name="email"/>
-    </label></p>
-    <input type="submit" value="Submit!"/>
+<form action="/" method="POST">
+    <p><label>Username: </label>
+        <input type="text" name="username" value="{{ username }}"/>
+        <span class="error">{{ username_error }}</span>
+    </p>
+    <p><label>Password: </label> 
+        <input type="text" name="password"/>
+        <span class="error">{{ pw_error }}</span>
+    </p>
+    <p><label>Verify password: </label> 
+        <input type="text" name="v_password"/>
+        <span class="error">{{ v_pw_error }}</span>
+    </p>
+    <p><label>Email (optional): </label> 
+        <input type="text" name="email" value="{{ email }}"/>
+        <span class="error">{{ email_error }}</span>
+    </p>
+    <input class="submit" type="submit" value="Submit!"/>
 </form>    
 
 {% endblock %}
