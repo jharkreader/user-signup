@@ -36,17 +36,11 @@ def validate_signup():
         pw_error = "Please enter a password."
     elif len(pw) < 3 or len(pw) > 20:
         pw_error = "Password must be greater than 3 but less than 20 characters."
-        pw = ""
-        v_pw = ""
     elif " " in pw:
         pw_error = "Password cannot contain spaces."
-        pw = ""
-        v_pw = ""
     elif pw != v_pw:
         v_pw_error = "Passwords must match."
         pw_error = "Passwords must match."
-        v_pw = ""
-        pw = ""    
     else:
         pass        
 
