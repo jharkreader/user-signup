@@ -1,73 +1,75 @@
+#!/usr/bin/env python
+
+__author__ = "student"
+__version__ = "1.0"
+# June 2017
+# Flask User Sign-up web app
+# LC-101 Project Rubric: http://education.launchcode.org/web-fundamentals/assignments/user-signup/
+
+
 from flask import Flask, request, redirect, render_template
-import cgi
+import re
 
 app = Flask(__name__)
-app.config['DEBUG'] = True 
+app.config['DEBUG'] = True
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
-
-    return render_template('index.html')
-
-
-@app.route("/", methods=["POST"])
-def validate_signup():
-    username = request.form['username']
-    pw = request.form['password']
-    v_pw = request.form['v_password']
-    email = request.form['email']
-
+    title = 'User login'
+    username = ''
+    email = ''
     username_error = ''
-    pw_error = ''
-    v_pw_error = ''
+    password_error = ''
+    verify_password_error = ''
     email_error = ''
 
-    if username == "":
-        username_error = "Please enter a username."
-    elif len(username) < 3 or len(username) > 20:
-        username_error = "User name must be greater than 3 but less than 20 characters."
-    elif " " in username:
-        username_error = "User name cannot contain spaces."
-    else:
-        pass        
+    if request.method == 'POST':
 
-    if pw == "":
-        pw_error = "Please enter a password."
-    elif len(pw) < 3 or len(pw) > 20:
-        pw_error = "Password must be greater than 3 but less than 20 characters."
-    elif " " in pw:
-        pw_error = "Password cannot contain spaces."
-    elif pw != v_pw:
-        v_pw_error = "Passwords must match."
-        pw_error = "Passwords must match."
-    else:
-        pass        
+        username = request.form['username']
+        password = request.form['password']
+        verify_password = request.form['v_password']
+        email = request.form['email']
 
-    if email != "":
-        if "@" not in email or "." not in email or len(email) < 3 or len(email) > 20 or " " in email:
-            email_error = "Please enter a valid email address."
-    else:
-        pass
+        if username == "":
+            username_error = "Please enter a username."
+        elif (len(username) <= 3) or (len(username) >= 20):
+            username_error = "User name must be greater than 3 but less than 20 characters."
+        elif " " in username:
+            username_error = "User name cannot contain spaces."
+        else:
+            pass
 
+        if password == "":
+            password_error = "Please enter a password."
+        elif (len(password) <= 3) or (len(password) >= 20):
+            password_error = "Password must be greater than 3 but less than 20 characters."
+        elif " " in password:
+            password_error = "Password cannot contain spaces."
+        elif password != verify_password:
+            verify_password_error = "Passwords must match."
+            password_error = "Passwords must match."
+        else:
+            pass
 
-    if not username_error and not pw_error and not v_pw_error and not email_error:
-        return redirect('/valid-signup?username={0}'.format(username))
+        if (email != "") and (not re.match('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email)):
+                email_error = "Please enter a valid email address."
+                email = ""
 
-    else:
-        return render_template('index.html', 
-        username_error=username_error, 
-        pw_error=pw_error, 
-        v_pw_error=v_pw_error, 
-        email_error=email_error, 
-        username=username, 
-        email=email)    
+        if (not username_error) and (not password_error) and (not verify_password_error) and (not email_error):
+            return redirect('/valid-signup?username={0}'.format(username))
+
+    return render_template('login_form.html', title=title, username_error=username_error, password_error=password_error,
+                           verify_password_error=verify_password_error, email_error=email_error, username=username,
+                           email=email)
 
 
 @app.route("/valid-signup")
 def send():
+    title = "welcome"
     username = request.args.get("username")
-    return render_template('welcome.html', username=username)
+    return render_template('welcome.html', title=title, username=username)
 
 
-app.run()    
+if __name__ == '__main__':
+    app.run()
